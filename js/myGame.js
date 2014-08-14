@@ -14,10 +14,10 @@ function preload() {
 
 var spaceship;
 var cursors;
-var scoreText;
-var score=0;
-var playerHealth=100;
+var scoreText, healthText;
+var score=0, spaceshipHealth=100;
 var aMaxSize=2;
+
 var bullet;
 var bullets;
 var bulletTime = 0;
@@ -77,8 +77,10 @@ function create() {
 
     spaceship.body.drag.set(10);
     spaceship.body.maxVelocity.set(200);
+    spaceship.health = 100;
 
     scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
+    healthText = game.add.text(100, 16, 'health: 100', { fontSize: '32px', fill: '#8d3'});
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys();
@@ -115,14 +117,13 @@ function update() {
         fireBullet();
     }
 
-    game.physics.arcade.collide(asteroids, spaceship);
+    //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
+    game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
+    game.physics.arcade.collide(asteroids, spaceship, spaceshipHit, null, this);
     game.physics.arcade.collide(asteroids, asteroids);
 
     screenWrap(spaceship);
-
     bullets.forEachExists(screenWrap, this);
-
-    game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
 
 }
 
@@ -133,6 +134,14 @@ function asteroidHit(asteroid, bullet){
     score += 10;
     scoreText.text = 'Score: '+ score;
   }
+}
+
+function spaceshipHit(spaceship, asteroid){
+  //if(spaceship.health >0){
+    spaceship.damage(asteroid.health * 5);
+    asteroid.damage(1);
+    healthText.text = 'health: ' + spaceship.health;
+  //}
 }
 
 function fireBullet () {
