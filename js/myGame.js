@@ -14,12 +14,13 @@ function preload() {
 
 var spaceship;
 var cursors;
-
+var score=0;
 var bullet;
 var bullets;
 var bulletTime = 0;
 var asteroids;
 var asteroidsSprites;
+
 function create() {
 
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
@@ -43,12 +44,13 @@ function create() {
     // Asteroids
     asteroids = game.add.group();
     asteroids.enableBody = true;
-    asteroids.physicsBodyType = Phaser.Physics.ARCADE;
-    for(i=0; i<20; i++)
-      asteroids.create(i*50,100,asteroidsSprites.getRandom().key);
+    var a;
+    for(i=0; i<10; i++){
+      a = asteroids.create(game.world.randomX, game.world.randomY, asteroidsSprites.getRandom().key);
+      a.body.bounce.set(1);
+      a.body.collideWorldBounds = true;
+      a.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);}
     asteroids.setAll('health', 3);
-
-
 
     //  Our ships bullets
     bullets = game.add.group();
@@ -104,6 +106,9 @@ function update() {
     {
         fireBullet();
     }
+
+    game.physics.arcade.collide(asteroids, spaceship);
+    game.physics.arcade.collide(asteroids, asteroids);
 
     screenWrap(spaceship);
 
@@ -172,5 +177,6 @@ function gofull() {
 }
 
 function render() {
-  game.debug.spriteCoords(spaceship, 32, 32);
+  game.debug.bodyInfo(spaceship, 32, 32);
+  game.debug.quadTree(game.physics.arcade.quadTree);
 }
