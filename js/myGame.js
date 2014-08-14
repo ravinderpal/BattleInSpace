@@ -14,7 +14,10 @@ function preload() {
 
 var spaceship;
 var cursors;
+var scoreText;
 var score=0;
+var playerHealth=100;
+var aMaxSize=2;
 var bullet;
 var bullets;
 var bulletTime = 0;
@@ -33,7 +36,7 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     //  A spacey background
-    game.add.tileSprite(0, 0, game.width, game.height, 'space');
+    bg = game.add.tileSprite(0, 0, game.width, game.height, 'space');
 
     //the three sprites of asteroids
     asteroidsSprites = game.add.group();
@@ -44,13 +47,16 @@ function create() {
     // Asteroids
     asteroids = game.add.group();
     asteroids.enableBody = true;
-    var a;
+    var a; var dim;
     for(i=0; i<10; i++){
       a = asteroids.create(game.world.randomX, game.world.randomY, asteroidsSprites.getRandom().key);
       a.body.bounce.set(1);
       a.body.collideWorldBounds = true;
-      a.body.velocity.setTo(10 + Math.random() * 40, 10 + Math.random() * 40);}
-    asteroids.setAll('health', 3);
+      a.body.velocity.setTo(Math.random() * 300, Math.random() * 300);
+      dim=(Math.random()*aMaxSize).toFixed(0); //asteroid's dimension
+      a.scale.setTo(dim,dim);
+      a.health = dim*2;
+    }
 
     //  Our ships bullets
     bullets = game.add.group();
@@ -70,7 +76,9 @@ function create() {
     game.physics.enable(spaceship, Phaser.Physics.ARCADE);
 
     spaceship.body.drag.set(10);
-    spaceship.body.maxVelocity.set(150);
+    spaceship.body.maxVelocity.set(200);
+
+    scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys();
@@ -121,6 +129,10 @@ function update() {
 function asteroidHit(asteroid, bullet){
   bullet.kill();
   asteroid.damage(1);
+  if(asteroid.health <= 0){
+    score += 10;
+    scoreText.text = 'Score: '+ score;
+  }
 }
 
 function fireBullet () {
@@ -135,7 +147,7 @@ function fireBullet () {
             bullet.lifespan = 1500;
             bullet.rotation = spaceship.rotation;
             game.physics.arcade.velocityFromRotation(spaceship.rotation, 400, bullet.body.velocity);
-            bulletTime = game.time.now + 50;
+            bulletTime = game.time.now + 200;
         }
     }
 
@@ -177,6 +189,7 @@ function gofull() {
 }
 
 function render() {
-  game.debug.bodyInfo(spaceship, 32, 32);
-  game.debug.quadTree(game.physics.arcade.quadTree);
+  //game.debug.bodyInfo(spaceship, 32, 32);
+  //game.debug.quadTree(game.physics.arcade.quadTree);
+  //game.debug.cameraInfo(game.camera, 32, 500);
 }
