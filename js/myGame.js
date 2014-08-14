@@ -57,7 +57,7 @@ function create() {
       a.body.bounce.set(1);
       a.body.collideWorldBounds = true;
       a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
-      dim=(Math.random() * aMaxSize).toFixed(0); //asteroid's dimension
+      dim=(Math.random() * aMaxSize + 1).toFixed(0); //asteroid's dimension
       a.scale.setTo(dim, dim);
       a.health = dim * 2;
     }
