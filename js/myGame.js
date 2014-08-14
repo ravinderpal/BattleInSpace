@@ -15,15 +15,18 @@ function preload() {
 var spaceship;
 var cursors;
 var scoreText, healthText;
-var score=0, spaceshipHealth=100;
+var score=0, spaceshipHealth=1000;
 var aMaxSize=2;
+var nAsteroids=5;
+var aSpeed=100;
+var spaceHeight = 1500, spaceWidth = 1500;
 
 var bullet;
 var bullets;
 var bulletTime = 0;
 var asteroids;
 var asteroidsSprites;
-
+var aux;
 function create() {
 
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
@@ -32,11 +35,13 @@ function create() {
     game.renderer.clearBeforeRender = false;
     game.renderer.roundPixels = true;
 
+
+    bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
+    game.world.setBounds(0, 0, spaceHeight, spaceWidth);
     //  We need arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     //  A spacey background
-    bg = game.add.tileSprite(0, 0, game.width, game.height, 'space');
 
     //the three sprites of asteroids
     asteroidsSprites = game.add.group();
@@ -47,40 +52,38 @@ function create() {
     // Asteroids
     asteroids = game.add.group();
     asteroids.enableBody = true;
-    var a; var dim;
-    for(i=0; i<10; i++){
+    for(i=0; i<nAsteroids; i++){
       a = asteroids.create(game.world.randomX, game.world.randomY, asteroidsSprites.getRandom().key);
       a.body.bounce.set(1);
       a.body.collideWorldBounds = true;
-      a.body.velocity.setTo(Math.random() * 300, Math.random() * 300);
-      dim=(Math.random()*aMaxSize).toFixed(0); //asteroid's dimension
-      a.scale.setTo(dim,dim);
-      a.health = dim*2;
+      a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
+      dim=(Math.random() * aMaxSize).toFixed(0); //asteroid's dimension
+      a.scale.setTo(dim, dim);
+      a.health = dim * 2;
     }
 
-    //  Our ships bullets
+    //  Ship's bullets
     bullets = game.add.group();
     bullets.enableBody = true;
     bullets.physicsBodyType = Phaser.Physics.ARCADE;
-
-    //  All 40 of them
     bullets.createMultiple(40, 'bullet');
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
 
-    //  Our player ship
-    spaceship = game.add.sprite(300, 300, 'ship');
+    //  Player's ship
+    spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
     spaceship.anchor.set(0.5);
-
-    //  and its physics settings
     game.physics.enable(spaceship, Phaser.Physics.ARCADE);
-
+    spaceship.body.collideWorldBounds = true;
+    //  and its physics settings
     spaceship.body.drag.set(10);
     spaceship.body.maxVelocity.set(200);
-    spaceship.health = 100;
-
+    spaceship.health = spaceshipHealth;
+    game.camera.follow(spaceship);
+    //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
     scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
-    healthText = game.add.text(100, 16, 'health: 100', { fontSize: '32px', fill: '#8d3'});
+    healthText = game.add.text(100, 16, 'health: '+spaceshipHealth, { fontSize: '32px', fill: '#8d3'});
+    aux = game.add.text(100, 50, 'tot: ', { fontSize: '32px', fill: '#8d3'});
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys();
@@ -89,7 +92,7 @@ function create() {
 }
 
 function update() {
-
+    aux.text = "tot: "+asteroids.total;
     if (cursors.up.isDown)
     {
         game.physics.arcade.accelerationFromRotation(spaceship.rotation, 200, spaceship.body.acceleration);
@@ -101,11 +104,11 @@ function update() {
 
     if (cursors.left.isDown)
     {
-        spaceship.body.angularVelocity = -300;
+        spaceship.body.angularVelocity = -200;
     }
     else if (cursors.right.isDown)
     {
-        spaceship.body.angularVelocity = 300;
+        spaceship.body.angularVelocity = 200;
     }
     else
     {
@@ -120,10 +123,9 @@ function update() {
     //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
     game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
     game.physics.arcade.collide(asteroids, spaceship, spaceshipHit, null, this);
-    game.physics.arcade.collide(asteroids, asteroids);
 
-    screenWrap(spaceship);
-    bullets.forEachExists(screenWrap, this);
+    //screenWrap(spaceship);
+    //bullets.forEachExists(screenWrap, this);
 
 }
 
@@ -153,10 +155,10 @@ function fireBullet () {
         if (bullet)
         {
             bullet.reset(spaceship.body.x + 16, spaceship.body.y + 16);
-            bullet.lifespan = 1500;
+            bullet.lifespan = 2000;
             bullet.rotation = spaceship.rotation;
             game.physics.arcade.velocityFromRotation(spaceship.rotation, 400, bullet.body.velocity);
-            bulletTime = game.time.now + 200;
+            bulletTime = game.time.now + 120;
         }
     }
 
@@ -198,7 +200,7 @@ function gofull() {
 }
 
 function render() {
-  //game.debug.bodyInfo(spaceship, 32, 32);
+  //game.debug.bodyInfo(asteroids, 32, 32);
   //game.debug.quadTree(game.physics.arcade.quadTree);
   //game.debug.cameraInfo(game.camera, 32, 500);
 }
