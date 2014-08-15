@@ -19,14 +19,14 @@ var score=0, spaceshipHealth=1000;
 var aMaxSize=2;
 var nAsteroids=5;
 var aSpeed=100;
-var spaceHeight = 1500, spaceWidth = 1500;
+var spaceHeight = 1600, spaceWidth = 1600;
 
 var bullet;
 var bullets;
 var bulletTime = 0;
 var asteroids;
 var asteroidsSprites;
-var aux;
+var aAlive;
 function create() {
 
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
@@ -76,14 +76,14 @@ function create() {
     game.physics.enable(spaceship, Phaser.Physics.ARCADE);
     spaceship.body.collideWorldBounds = true;
     //  and its physics settings
-    spaceship.body.drag.set(10);
+    spaceship.body.drag.set(100);
     spaceship.body.maxVelocity.set(200);
     spaceship.health = spaceshipHealth;
     game.camera.follow(spaceship);
     //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
     scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
     healthText = game.add.text(100, 16, 'health: '+spaceshipHealth, { fontSize: '32px', fill: '#8d3'});
-    aux = game.add.text(100, 50, 'tot: ', { fontSize: '32px', fill: '#8d3'});
+    aAlive = game.add.text(100, 50, 'Asteroids left: ', { fontSize: '32px', fill: '#8d3'});
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys();
@@ -92,7 +92,7 @@ function create() {
 }
 
 function update() {
-    aux.text = "tot: "+asteroids.total;
+    aAlive.text = "Asteroids left: "+asteroids.total;
     if (cursors.up.isDown)
     {
         game.physics.arcade.accelerationFromRotation(spaceship.rotation, 200, spaceship.body.acceleration);
