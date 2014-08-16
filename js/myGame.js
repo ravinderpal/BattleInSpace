@@ -1,4 +1,5 @@
-
+// Singh Ravinder Pal
+//
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
@@ -15,11 +16,11 @@ function preload() {
 var spaceship;
 var cursors;
 var scoreText, healthText;
-var score=0, spaceshipHealth=1000;
+var score=0, spaceshipHealth=100;
 var aMaxSize=2;
 var nAsteroids=5;
-var aSpeed=100;
-var spaceHeight = 1600, spaceWidth = 1600;
+var aSpeed=200;
+var spaceHeight = 800, spaceWidth = 600;
 
 var bullet;
 var bullets;
@@ -57,7 +58,7 @@ function create() {
       a.body.bounce.set(1);
       a.body.collideWorldBounds = true;
       a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
-      dim=(Math.random() * aMaxSize + 1).toFixed(0); //asteroid's dimension
+      dim=(Math.random() * aMaxSize + 1); //asteroid's dimension
       a.scale.setTo(dim, dim);
       a.health = dim * 2;
     }
@@ -75,6 +76,7 @@ function create() {
     spaceship.anchor.set(0.5);
     game.physics.enable(spaceship, Phaser.Physics.ARCADE);
     spaceship.body.collideWorldBounds = true;
+    spaceship.body.bounce.set(1);
     //  and its physics settings
     spaceship.body.drag.set(100);
     spaceship.body.maxVelocity.set(200);
@@ -142,7 +144,7 @@ function spaceshipHit(spaceship, asteroid){
   //if(spaceship.health >0){
     spaceship.damage(asteroid.health * 5);
     asteroid.damage(1);
-    healthText.text = 'health: ' + spaceship.health;
+    healthText.text = 'health: ' + spaceship.health.toFixed(0);
   //}
 }
 
