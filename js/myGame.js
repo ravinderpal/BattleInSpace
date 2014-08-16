@@ -10,17 +10,18 @@ function preload() {
     game.load.image('asteroid1', 'assets/asteroid1.png');
     game.load.image('asteroid2', 'assets/asteroid2.png');
     game.load.image('asteroid3', 'assets/asteroid3.png');
+    game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
 
 }
 
 var spaceship;
 var cursors;
 var scoreText, healthText;
-var score=0, spaceshipHealth=100;
+var score=0, spaceshipHealth=50;
 var aMaxSize=2;
-var nAsteroids=5;
+var nAsteroids=10;
 var aSpeed=200;
-var spaceHeight = 800, spaceWidth = 600;
+var spaceHeight = 1000, spaceWidth = 800;
 
 var bullet;
 var bullets;
@@ -58,7 +59,7 @@ function create() {
       a.body.bounce.set(1);
       a.body.collideWorldBounds = true;
       a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
-      dim=(Math.random() * aMaxSize + 1); //asteroid's dimension
+      dim=(Math.random() * aMaxSize) + 0.5; //asteroid's dimension
       a.scale.setTo(dim, dim);
       a.health = dim * 2;
     }
@@ -80,7 +81,7 @@ function create() {
     //  and its physics settings
     spaceship.body.drag.set(100);
     spaceship.body.maxVelocity.set(200);
-    spaceship.health = spaceshipHealth;
+    //spaceship.health = spaceshipHealth;
     game.camera.follow(spaceship);
     //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
     scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
@@ -141,11 +142,15 @@ function asteroidHit(asteroid, bullet){
 }
 
 function spaceshipHit(spaceship, asteroid){
-  //if(spaceship.health >0){
-    spaceship.damage(asteroid.health * 5);
+    spaceshipHealth -= asteroid.health * 5;
     asteroid.damage(1);
-    healthText.text = 'health: ' + spaceship.health.toFixed(0);
-  //}
+    if(spaceshipHealth <=0){
+      spaceshipHealth=0;
+      spaceship.loadTexture('explosion', 0);
+      spaceship.animations.add('explode');
+      spaceship.animations.play('explode', 25, false, true);
+    }
+    healthText.text = 'health: ' + spaceshipHealth.toFixed(0);
 }
 
 function fireBullet () {
