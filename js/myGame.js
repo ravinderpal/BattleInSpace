@@ -24,7 +24,7 @@ var scoreText, healthText;
 var score=0, spaceshipHealth=50;
 var aMaxSize=2;
 var nAsteroids=10;
-var aSpeed=200;
+var aSpeed=300;
 var spaceHeight = 1000, spaceWidth = 800;
 var shipExplosion, shipShot;
 
@@ -105,7 +105,8 @@ function create() {
 }
 
 function update() {
-    aAlive.text = "Asteroids left: "+asteroids.total;
+  aAlive.text = "Asteroids left: "+asteroids.total;
+  if(spaceship.alive === true){
     if (cursors.up.isDown)
     {
         game.physics.arcade.accelerationFromRotation(spaceship.rotation, 200, spaceship.body.acceleration);
@@ -133,13 +134,13 @@ function update() {
         fireBullet();
         shipShot.play('', 0, 0.1);
     }
+  }
+  //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
+  game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
+  game.physics.arcade.collide(asteroids, spaceship, spaceshipHit, null, this);
 
-    //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
-    game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
-    game.physics.arcade.collide(asteroids, spaceship, spaceshipHit, null, this);
-
-    //screenWrap(spaceship);
-    //bullets.forEachExists(screenWrap, this);
+  //screenWrap(spaceship);
+  //bullets.forEachExists(screenWrap, this);
 
 }
 
