@@ -12,6 +12,8 @@ function preload() {
     game.load.image('asteroid3', 'assets/asteroid3.png');
     game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
 
+    game.load.audio('spaceMusic', 'assets/spaceMusic.mp3')
+
 }
 
 var spaceship;
@@ -30,6 +32,10 @@ var asteroids;
 var asteroidsSprites;
 var aAlive;
 function create() {
+
+    music = game.add.audio('spaceMusic', 1, true);
+    music.play('', 0, 1, true);
+    music.loop = true;
 
     game.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
     game.input.onDown.add(gofull, this);
@@ -148,6 +154,7 @@ function spaceshipHit(spaceship, asteroid){
       spaceshipHealth=0;
       spaceship.loadTexture('explosion', 0);
       spaceship.animations.add('explode');
+      //                   play(name, frameRate, loop, killOnComplete)
       spaceship.animations.play('explode', 25, false, true);
     }
     healthText.text = 'health: ' + spaceshipHealth.toFixed(0);
