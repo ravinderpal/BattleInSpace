@@ -12,7 +12,9 @@ function preload() {
     game.load.image('asteroid3', 'assets/asteroid3.png');
     game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
 
-    game.load.audio('spaceMusic', 'assets/spaceMusic.mp3')
+    game.load.audio('spaceMusic', 'assets/spaceMusic.mp3');
+    game.load.audio('shipExplosion', 'assets/explode1.wav');
+    game.load.audio('shot', 'assets/pistol.wav');
 
 }
 
@@ -24,6 +26,7 @@ var aMaxSize=2;
 var nAsteroids=10;
 var aSpeed=200;
 var spaceHeight = 1000, spaceWidth = 800;
+var shipExplosion, shipShot;
 
 var bullet;
 var bullets;
@@ -34,6 +37,8 @@ var aAlive;
 function create() {
 
     music = game.add.audio('spaceMusic', 1, true);
+    shipExplosion = game.add.audio('shipExplosion', 1);
+    shipShot = game.add.audio('shot', 1);
     music.play('', 0, 1, true);
     music.loop = true;
 
@@ -127,6 +132,7 @@ function update() {
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
     {
         fireBullet();
+        shipShot.play('', 0, 0.1);
     }
 
     //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
@@ -155,7 +161,8 @@ function spaceshipHit(spaceship, asteroid){
       spaceship.loadTexture('explosion', 0);
       spaceship.animations.add('explode');
       //                   play(name, frameRate, loop, killOnComplete)
-      spaceship.animations.play('explode', 25, false, true);
+      spaceship.animations.play('explode', 20, false, true);
+      shipExplosion.play('', 0, 1, false);
     }
     healthText.text = 'health: ' + spaceshipHealth.toFixed(0);
 }
