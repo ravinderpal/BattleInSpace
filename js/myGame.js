@@ -1,5 +1,5 @@
 // Singh Ravinder Pal
-//
+// Battle In Space
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
@@ -36,25 +36,21 @@ var asteroidsSprites;
 var aAlive;
 function create() {
 
-    music = game.add.audio('spaceMusic', 1, true);
-    shipExplosion = game.add.audio('shipExplosion', 1);
-    shipShot = game.add.audio('shot', 1);
-    music.play('', 0, 1, true);
-    music.loop = true;
-
-    game.scale.fullScreenScaleMode = Phaser.ScaleManager.NO_SCALE;
+    bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
+    game.world.setBounds(0, 0, spaceHeight, spaceWidth);
+    //  We need arcade physics
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
     game.input.onDown.add(gofull, this);
     //  This will run in Canvas mode, so let's gain a little speed and display
     game.renderer.clearBeforeRender = false;
     game.renderer.roundPixels = true;
 
-
-    bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
-    game.world.setBounds(0, 0, spaceHeight, spaceWidth);
-    //  We need arcade physics
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    //  A spacey background
+    shipExplosion = game.add.audio('shipExplosion', 1);
+    shipShot = game.add.audio('shot', 1);
+    music = game.add.audio('spaceMusic', 1, true);
+    music.play('', 0, 1, true);
+    music.loop = true;
 
     //the three sprites of asteroids
     asteroidsSprites = game.add.group();
@@ -95,9 +91,12 @@ function create() {
     //spaceship.health = spaceshipHealth;
     game.camera.follow(spaceship);
     //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
-    scoreText = game.add.text(600, 16, 'score: 0', { fontSize: '32px', fill: '#d8137e' });
-    healthText = game.add.text(100, 16, 'health: '+spaceshipHealth, { fontSize: '32px', fill: '#8d3'});
+    scoreText = game.add.text(600, 16, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
+    scoreText.fixedToCamera = true;
+    healthText = game.add.text(100, 16, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#8d3'});
+    healthText.fixedToCamera = true;
     aAlive = game.add.text(100, 50, 'Asteroids left: ', { fontSize: '32px', fill: '#8d3'});
+    aAlive.fixedToCamera = true;
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys();
@@ -164,7 +163,7 @@ function spaceshipHit(spaceship, asteroid){
       spaceship.animations.play('explode', 20, false, true);
       shipExplosion.play('', 0, 1, false);
     }
-    healthText.text = 'health: ' + spaceshipHealth.toFixed(0);
+    healthText.text = 'Health: ' + spaceshipHealth.toFixed(0);
 }
 
 function fireBullet () {
