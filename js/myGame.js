@@ -18,6 +18,13 @@ function preload() {
   game.load.audio('shipExplosion', 'assets/explode1.wav');
   game.load.audio('shot', 'assets/pistol.wav');
 
+  //SCREEN SETTINGS
+  game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+  game.scale.pageAlignHorizontally = true;
+  game.scale.pageAlignVertically = true;
+  game.scale.setScreenSize(true);
+  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
 }
 
 var spaceship;
@@ -38,12 +45,7 @@ var asteroidsSprites;
 var aAlive;
 function create() {
 
-  //SCREEN SETTINGS
-  game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-  game.scale.pageAlignHorizontally = true;
-  game.scale.pageAlignVertically = true;
-  game.scale.setScreenSize(true);
-  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+  if (!game.device.desktop) game.input.onDown.add(gofull, this);
 
   bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
   game.world.setBounds(0, 0, spaceHeight, spaceWidth);
@@ -60,6 +62,7 @@ function create() {
 
   //  Player's ship
   spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
+  //spaceship.scale.setTo(2,2);
   spaceship.anchor.set(0.5);
   game.physics.enable(spaceship, Phaser.Physics.ARCADE);
   spaceship.body.collideWorldBounds = true;
@@ -74,6 +77,8 @@ function create() {
   bullets.enableBody = true;
   bullets.physicsBodyType = Phaser.Physics.ARCADE;
   bullets.createMultiple(40, 'bullet');
+  //bullets.setAll('scale.x', 2);
+  //bullets.setAll('scale.y', 2);
   bullets.setAll('anchor.x', 0.5);
   bullets.setAll('anchor.y', 0.5);
 
@@ -235,6 +240,8 @@ if (game.scale.isFullScreen)
     game.scale.startFullScreen();
   }
 }
+
+function gofull() { game.scale.startFullScreen(false);}
 
 function render() {
   //game.debug.bodyInfo(asteroids, 32, 32);
