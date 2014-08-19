@@ -1,6 +1,6 @@
 // Singh Ravinder Pal
 // Battle In Space
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(1200, 720, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
@@ -23,9 +23,9 @@ var cursors;
 var scoreText, healthText;
 var score=0, spaceshipHealth=50;
 var aMaxSize=1;
-var nAsteroids=10;
+var nAsteroids=50;
 var aSpeed=300;
-var spaceHeight = 1000, spaceWidth = 800;
+var spaceHeight = 1500, spaceWidth = 1500;
 var shipExplosion, shipShot;
 
 var bullet;
@@ -93,7 +93,7 @@ function create() {
   aAlive.fixedToCamera = true;
 
   //  Game input
-  cursors = game.input.keyboard.createCursorKeys(); //
+  cursors = game.input.keyboard.createCursorKeys();
   game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 
   // AUDIO SYSTEM
@@ -133,7 +133,12 @@ function update() {
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
     {
       fireBullet();
-      shipShot.play('', 0, 0.1);
+      if(!shipShot.isPlaying)
+        shipShot.play('', 0, 0.1);
+    }
+    if (game.input.keyboard.justReleased(Phaser.Keyboard.SPACEBAR))
+    {
+      shipShot.stop();
     }
   }
   //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
@@ -164,6 +169,7 @@ function spaceshipHit(spaceship, asteroid){
     spaceship.animations.add('explode');
     //                   play(name, frameRate, loop, killOnComplete)
     spaceship.animations.play('explode', 20, false, true);
+    shipShot.loop=false;
     shipExplosion.play('', 0, 1, false);
   }
   healthText.text = 'Health: ' + spaceshipHealth.toFixed(0);
