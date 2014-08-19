@@ -22,7 +22,7 @@ var spaceship;
 var cursors;
 var scoreText, healthText;
 var score=0, spaceshipHealth=50;
-var aMaxSize=2;
+var aMaxSize=1;
 var nAsteroids=10;
 var aSpeed=300;
 var spaceHeight = 1000, spaceWidth = 800;
@@ -46,19 +46,32 @@ function create() {
   game.renderer.clearBeforeRender = false;
   game.renderer.roundPixels = true;
 
-  shipExplosion = game.add.audio('shipExplosion', 1);
-  shipShot = game.add.audio('shot', 1);
-  music = game.add.audio('spaceMusic', 1, true);
-  music.play('', 0, 1, true);
-  music.loop = true;
-
   //the three sprites of asteroids
   asteroidsSprites = game.add.group();
   asteroidsSprites.create(-100,-100,'asteroid1'); // Group.create( x, y, key)
   asteroidsSprites.create(-100,-100,'asteroid2');
   asteroidsSprites.create(-100,-100,'asteroid3');
 
-  // Asteroids
+  //  Player's ship
+  spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
+  spaceship.anchor.set(0.5);
+  game.physics.enable(spaceship, Phaser.Physics.ARCADE);
+  spaceship.body.collideWorldBounds = true;
+  spaceship.body.bounce.set(1);
+  spaceship.body.drag.set(100);
+  spaceship.body.maxVelocity.set(200);
+  game.camera.follow(spaceship);
+  //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
+
+  //  Ship's bullets
+  bullets = game.add.group();
+  bullets.enableBody = true;
+  bullets.physicsBodyType = Phaser.Physics.ARCADE;
+  bullets.createMultiple(40, 'bullet');
+  bullets.setAll('anchor.x', 0.5);
+  bullets.setAll('anchor.y', 0.5);
+
+  // ASTEROIDS
   asteroids = game.add.group();
   asteroids.enableBody = true;
   for(i=0; i<nAsteroids; i++){
@@ -71,36 +84,24 @@ function create() {
     a.health = dim * 2;
   }
 
-  //  Ship's bullets
-  bullets = game.add.group();
-  bullets.enableBody = true;
-  bullets.physicsBodyType = Phaser.Physics.ARCADE;
-  bullets.createMultiple(40, 'bullet');
-  bullets.setAll('anchor.x', 0.5);
-  bullets.setAll('anchor.y', 0.5);
-
-  //  Player's ship
-  spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
-  spaceship.anchor.set(0.5);
-  game.physics.enable(spaceship, Phaser.Physics.ARCADE);
-  spaceship.body.collideWorldBounds = true;
-  spaceship.body.bounce.set(1);
-  //  and its physics settings
-  spaceship.body.drag.set(100);
-  spaceship.body.maxVelocity.set(200);
-  //spaceship.health = spaceshipHealth;
-  game.camera.follow(spaceship);
-  //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
+  // SCORE, HEALTH, AND ASTEROIDS LEFT TEXTS
   scoreText = game.add.text(600, 16, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
   scoreText.fixedToCamera = true;
-  healthText = game.add.text(100, 16, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#8d3'});
+  healthText = game.add.text(100, 16, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#97268e'});
   healthText.fixedToCamera = true;
-  aAlive = game.add.text(100, 50, 'Asteroids left: ', { fontSize: '32px', fill: '#8d3'});
+  aAlive = game.add.text(100, 50, 'Asteroids left: ', { fontSize: '32px', fill: '#c6338d'});
   aAlive.fixedToCamera = true;
 
   //  Game input
-  cursors = game.input.keyboard.createCursorKeys();
+  cursors = game.input.keyboard.createCursorKeys(); //
   game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+
+  // AUDIO SYSTEM
+  shipExplosion = game.add.audio('shipExplosion', 1);
+  shipShot = game.add.audio('shot', 1);
+  music = game.add.audio('spaceMusic', 1, true);
+  music.play('', 0, 1, true);
+  music.loop = true;
 
 }
 
@@ -149,12 +150,13 @@ function asteroidHit(asteroid, bullet){
   asteroid.damage(1);
   if(asteroid.health <= 0){
     score += 10;
-    scoreText.text = 'Score: '+ score;
+    scoreText.text = 'Score: '+ score.toFixed(0);
   }
 }
 
 function spaceshipHit(spaceship, asteroid){
   spaceshipHealth -= asteroid.health * 5;
+  score -= asteroid.health * 2;
   asteroid.damage(1);
   if(spaceshipHealth <=0){
     spaceshipHealth=0;
@@ -165,6 +167,7 @@ function spaceshipHit(spaceship, asteroid){
     shipExplosion.play('', 0, 1, false);
   }
   healthText.text = 'Health: ' + spaceshipHealth.toFixed(0);
+  scoreText.text = 'Score: ' + score.toFixed(0);
 }
 
 function fireBullet () {
