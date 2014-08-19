@@ -1,6 +1,7 @@
 // Singh Ravinder Pal
 // Battle In Space
-var game = new Phaser.Game(1200, 720, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+
+var game = new Phaser.Game(1200, 700, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
@@ -21,7 +22,7 @@ function preload() {
 var spaceship;
 var cursors;
 var scoreText, healthText;
-var score=0, spaceshipHealth=50;
+var score=0, spaceshipHealth=100;
 var aMaxSize=1;
 var nAsteroids=50;
 var aSpeed=300;
@@ -36,12 +37,17 @@ var asteroidsSprites;
 var aAlive;
 function create() {
 
+  //SCREEN SETTINGS
+  game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+  game.scale.pageAlignHorizontally = true;
+  game.scale.pageAlignVertically = true;
+  game.scale.setScreenSize(true);
+  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+  game.input.onDown.add(gofull, this);
+
   bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
   game.world.setBounds(0, 0, spaceHeight, spaceWidth);
-  //  We need arcade physics
   game.physics.startSystem(Phaser.Physics.ARCADE);
-  game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
-  game.input.onDown.add(gofull, this);
   //  This will run in Canvas mode, so let's gain a little speed and display
   game.renderer.clearBeforeRender = false;
   game.renderer.roundPixels = true;
@@ -87,7 +93,7 @@ function create() {
   // SCORE, HEALTH, AND ASTEROIDS LEFT TEXTS
   scoreText = game.add.text(600, 16, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
   scoreText.fixedToCamera = true;
-  healthText = game.add.text(100, 16, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#97268e'});
+  healthText = game.add.text(100, 16, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#a7369e'});
   healthText.fixedToCamera = true;
   aAlive = game.add.text(100, 50, 'Asteroids left: ', { fontSize: '32px', fill: '#c6338d'});
   aAlive.fixedToCamera = true;
@@ -233,4 +239,5 @@ function render() {
   //game.debug.bodyInfo(asteroids, 32, 32);
   //game.debug.quadTree(game.physics.arcade.quadTree);
   //game.debug.cameraInfo(game.camera, 32, 500);
+  game.debug.text('Click / Tap to go fullscreen', 270, 16);
 }
