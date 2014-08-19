@@ -14,6 +14,9 @@ function preload() {
   game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
   game.load.image('fullscreen', 'assets/fsIcon.jpg');
 
+  //gamepad buttons
+  game.load.spritesheet('buttonhorizontal', 'assets/buttons-big/button-horizontal.png',96,64);
+  game.load.spritesheet('buttonvertical', 'assets/buttons-big/button-vertical.png',64,64)
   game.load.audio('spaceMusic', 'assets/spaceMusic.mp3');
   game.load.audio('shipExplosion', 'assets/explode1.wav');
   game.load.audio('shot', 'assets/pistol.wav');
@@ -43,6 +46,10 @@ var bulletTime = 0;
 var asteroids;
 var asteroidsSprites;
 var aAlive;
+
+var left=false;
+var right=false;
+var up=false;
 function create() {
 
   if (!game.device.desktop) game.input.onDown.add(gofull, this);
@@ -117,12 +124,38 @@ function create() {
   fsButton = game.add.button(20, 20, 'fullscreen', actionOnClick);
   fsButton.fixedToCamera = true;
   fsButton.visible=true;
+
+  // create our virtual game controller buttons
+  buttonright = game.add.button(180, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+  buttonright.fixedToCamera = true;
+  buttonright.events.onInputOver.add(function(){right=true;});
+  buttonright.events.onInputOut.add(function(){right=false;});
+  buttonright.events.onInputDown.add(function(){right=true;});
+  buttonright.events.onInputUp.add(function(){right=false;});
+
+  buttonleft = game.add.button(20, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+  buttonleft.fixedToCamera = true;
+  buttonleft.events.onInputOver.add(function(){left=true;});
+  buttonleft.events.onInputOut.add(function(){left=false;});
+  buttonleft.events.onInputDown.add(function(){left=true;});
+  buttonleft.events.onInputUp.add(function(){left=false;});
+
+  buttonup = game.add.button(116, 400, 'buttonvertical', null, this, 0, 1, 0, 1);
+  buttonup.fixedToCamera = true;
+  buttonup.events.onInputOver.add(function(){up=true;});
+  buttonup.events.onInputOut.add(function(){up=false;});
+  buttonup.events.onInputDown.add(function(){up=true;});
+  buttonup.events.onInputUp.add(function(){up=false;});
+
+  //comands=game.add.group();
+  //comands.create(96, 536, 'buttonvertical');
 }
+
 
 function update() {
   aAlive.text = "Asteroids left: "+asteroids.total;
   if(spaceship.alive === true){
-    if (cursors.up.isDown)
+    if (cursors.up.isDown || up)
     {
       game.physics.arcade.accelerationFromRotation(spaceship.rotation, 200, spaceship.body.acceleration);
     }
@@ -131,11 +164,11 @@ function update() {
       spaceship.body.acceleration.set(0);
     }
 
-    if (cursors.left.isDown)
+    if (cursors.left.isDown || left)
     {
       spaceship.body.angularVelocity = -200;
     }
-    else if (cursors.right.isDown)
+    else if (cursors.right.isDown || right)
     {
       spaceship.body.angularVelocity = 200;
     }
