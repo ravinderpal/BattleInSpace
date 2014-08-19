@@ -12,6 +12,7 @@ function preload() {
   game.load.image('asteroid2', 'assets/asteroid2.png');
   game.load.image('asteroid3', 'assets/asteroid3.png');
   game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
+  game.load.image('fullscreen', 'assets/fsIcon.jpg');
 
   game.load.audio('spaceMusic', 'assets/spaceMusic.mp3');
   game.load.audio('shipExplosion', 'assets/explode1.wav');
@@ -43,7 +44,6 @@ function create() {
   game.scale.pageAlignVertically = true;
   game.scale.setScreenSize(true);
   game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-  game.input.onDown.add(gofull, this);
 
   bg = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
   game.world.setBounds(0, 0, spaceHeight, spaceWidth);
@@ -109,6 +109,9 @@ function create() {
   music.play('', 0, 1, true);
   music.loop = true;
 
+  fsButton = game.add.button(20, 20, 'fullscreen', actionOnClick);
+  fsButton.fixedToCamera = true;
+  fsButton.visible=true;
 }
 
 function update() {
@@ -222,9 +225,8 @@ function screenWrap (sprite) {
 
 }
 
-function gofull() {
-
-  if (game.scale.isFullScreen)
+function actionOnClick() {
+if (game.scale.isFullScreen)
   {
     game.scale.stopFullScreen();
   }
@@ -232,12 +234,11 @@ function gofull() {
   {
     game.scale.startFullScreen();
   }
-
 }
 
 function render() {
   //game.debug.bodyInfo(asteroids, 32, 32);
   //game.debug.quadTree(game.physics.arcade.quadTree);
   //game.debug.cameraInfo(game.camera, 32, 500);
-  game.debug.text('Click / Tap to go fullscreen', 270, 16);
+  //game.debug.text('Click / Tap to go fullscreen', 270, 16);
 }
