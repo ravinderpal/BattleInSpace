@@ -17,6 +17,9 @@ function preload() {
   //gamepad buttons
   game.load.spritesheet('buttonhorizontal', 'assets/buttons-big/button-horizontal.png',96,64);
   game.load.spritesheet('buttonvertical', 'assets/buttons-big/button-vertical.png',64,64)
+  game.load.spritesheet('buttonfire', 'assets/buttons-big/button-round-a.png',96,96);
+
+  // AUDIO SYSTEM
   game.load.audio('spaceMusic', 'assets/spaceMusic.mp3');
   game.load.audio('shipExplosion', 'assets/explode1.wav');
   game.load.audio('shot', 'assets/pistol.wav');
@@ -50,6 +53,7 @@ var aAlive;
 var left=false;
 var right=false;
 var up=false;
+var fire=false;
 function create() {
 
   if (!game.device.desktop) game.input.onDown.add(gofull, this);
@@ -147,6 +151,13 @@ function create() {
   buttonup.events.onInputDown.add(function(){up=true;});
   buttonup.events.onInputUp.add(function(){up=false;});
 
+  buttonfire = game.add.button(1000, 500, 'buttonfire', null, this, 0, 1, 0, 1);
+  buttonfire.fixedToCamera = true;
+  buttonfire.events.onInputOver.add(function(){fire=true;});
+  buttonfire.events.onInputOut.add(function(){fire=false;});
+  buttonfire.events.onInputDown.add(function(){fire=true;});
+  buttonfire.events.onInputUp.add(function(){fire=false;});
+
   //comands=game.add.group();
   //comands.create(96, 536, 'buttonvertical');
 }
@@ -177,7 +188,7 @@ function update() {
       spaceship.body.angularVelocity = 0;
     }
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) || fire)
     {
       fireBullet();
       if(!shipShot.isPlaying)
