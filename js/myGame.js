@@ -130,21 +130,24 @@ function create() {
   fsButton.visible=true;
 
   // create our virtual game controller buttons
-  buttonright = game.add.button(180, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
-  buttonright.fixedToCamera = true;
-  buttonright.events.onInputOver.add(function(){right=true;});
-  buttonright.events.onInputOut.add(function(){right=false;});
-  buttonright.events.onInputDown.add(function(){right=true;});
-  buttonright.events.onInputUp.add(function(){right=false;});
-
   buttonleft = game.add.button(20, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+  buttonleft.scale.setTo(2, 2);
   buttonleft.fixedToCamera = true;
   buttonleft.events.onInputOver.add(function(){left=true;});
   buttonleft.events.onInputOut.add(function(){left=false;});
   buttonleft.events.onInputDown.add(function(){left=true;});
   buttonleft.events.onInputUp.add(function(){left=false;});
 
-  buttonup = game.add.button(116, 400, 'buttonvertical', null, this, 0, 1, 0, 1);
+  buttonright = game.add.button(360, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
+  buttonright.scale.setTo(2, 2);
+  buttonright.fixedToCamera = true;
+  buttonright.events.onInputOver.add(function(){right=true;});
+  buttonright.events.onInputOut.add(function(){right=false;});
+  buttonright.events.onInputDown.add(function(){right=true;});
+  buttonright.events.onInputUp.add(function(){right=false;});
+
+  buttonup = game.add.button(222, 400, 'buttonvertical', null, this, 0, 1, 0, 1);
+  buttonup.scale.setTo(2, 2);
   buttonup.fixedToCamera = true;
   buttonup.events.onInputOver.add(function(){up=true;});
   buttonup.events.onInputOut.add(function(){up=false;});
@@ -152,6 +155,7 @@ function create() {
   buttonup.events.onInputUp.add(function(){up=false;});
 
   buttonfire = game.add.button(1000, 500, 'buttonfire', null, this, 0, 1, 0, 1);
+  buttonfire.scale.setTo(2,2);
   buttonfire.fixedToCamera = true;
   buttonfire.events.onInputOver.add(function(){fire=true;});
   buttonfire.events.onInputOut.add(function(){fire=false;});
