@@ -34,7 +34,7 @@ function preload() {
 }
 
 var score=0, spaceshipHealth=100;
-var aMaxSize=1, nAsteroids=50, aSpeed=300;
+var aMaxSize=1, nAsteroids=30, aSpeed=300;
 var spaceHeight = 1500, spaceWidth = 1500;
 var bulletTime = 0;
 var left=false, right=false, up=false, fire=false;
@@ -56,10 +56,9 @@ function create() {
   spaceship.anchor.set(0.5);
   game.physics.enable(spaceship, Phaser.Physics.ARCADE);
   spaceship.body.collideWorldBounds = true;
-  spaceship.body.bounce.set(1);
+  spaceship.body.bounce.set(0.2);
   spaceship.body.maxVelocity.set(200);
   game.camera.follow(spaceship);
-  //game.camera.deadzone = new Phaser.Rectangle(200, 200, 500, 300);
 
   //  SHIP BULLETS
   bullets = game.add.group();
@@ -77,7 +76,7 @@ function create() {
     if(x===0)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid1');
     if(x===1)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid2');
     if(x===2)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid3');
-    a.body.bounce.set(1);
+    a.body.bounce.set(0.7);
     a.body.collideWorldBounds = true;
     a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
     dim=(Math.random() * aMaxSize) + 0.5; //asteroid's dimension
@@ -109,6 +108,7 @@ function create() {
   fsButton.fixedToCamera = true;
   fsButton.visible=true;
 
+  if(!game.device.desktop){
   // create our virtual GAME CONTROL BUTTONS
   buttonleft = game.add.button(20, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
   buttonleft.scale.setTo(2, 2);
@@ -141,7 +141,7 @@ function create() {
   buttonfire.events.onInputOut.add(function(){fire=false;});
   buttonfire.events.onInputDown.add(function(){fire=true;});
   buttonfire.events.onInputUp.add(function(){fire=false;});
-
+}
 }
 
 
@@ -174,7 +174,7 @@ function update() {
     {
       fireBullet();
       if(!shipShot.isPlaying)
-        shipShot.play('', 0, 0.1);
+        shipShot.play('', 0, 0.3);
     }
     if (game.input.keyboard.justReleased(Phaser.Keyboard.SPACEBAR))
     {
