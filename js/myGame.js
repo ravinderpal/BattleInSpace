@@ -13,6 +13,7 @@ function preload() {
   game.load.image('asteroid3', 'assets/asteroid3.png');
   game.load.spritesheet('explosion', 'assets/explode.png', 128, 128, 10);
   game.load.image('fullscreen', 'assets/fsIcon.jpg');
+  game.load.image('restart', 'assets/restart.png');
 
   //gamepad buttons
   game.load.spritesheet('buttonhorizontal', 'assets/buttons-big/button-horizontal.png',96,64);
@@ -33,15 +34,13 @@ function preload() {
 
 }
 
-var score=0, spaceshipHealth=100;
+var score=0, spaceshipHealth = totHealth = 100;
 var aMaxSize=1, nAsteroids=30, aSpeed=300;
 var spaceHeight = 1500, spaceWidth = 1500;
 var bulletTime = 0;
 var left=false, right=false, up=false, fire=false;
 
 function create() {
-
-  if (!game.device.desktop) game.input.onDown.add(gofull, this);
 
   background = game.add.tileSprite(0, 0, spaceHeight, spaceWidth, 'space');
   game.world.setBounds(0, 0, spaceHeight, spaceWidth);
@@ -51,14 +50,7 @@ function create() {
   game.renderer.roundPixels = true;
 
   //  PLAYER'S SHIP
-  spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
-  //spaceship.scale.setTo(2,2);
-  spaceship.anchor.set(0.5);
-  game.physics.enable(spaceship, Phaser.Physics.ARCADE);
-  spaceship.body.collideWorldBounds = true;
-  spaceship.body.bounce.set(0.2);
-  spaceship.body.maxVelocity.set(200);
-  game.camera.follow(spaceship);
+  generateSpaceship();
 
   //  SHIP BULLETS
   bullets = game.add.group();
@@ -69,25 +61,12 @@ function create() {
   bullets.setAll('anchor.y', 0.5);
 
   // ASTEROIDS
-  asteroids = game.add.group();
-  asteroids.enableBody = true;
-  for(i=0, x=0; i<nAsteroids; i++, x++){
-    x%=3;
-    if(x===0)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid1');
-    if(x===1)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid2');
-    if(x===2)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid3');
-    a.body.bounce.set(0.7);
-    a.body.collideWorldBounds = true;
-    a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
-    dim=(Math.random() * aMaxSize) + 0.5; //asteroid's dimension
-    a.scale.setTo(dim, dim);
-    a.health = dim * 2;
-  }
+  generateAsteroids();
 
   // SCORE, HEALTH, AND ASTEROIDS-ALIVE TEXTS
   scoreText = game.add.text(100, 60, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
   scoreText.fixedToCamera = true;
-  healthText = game.add.text(100, 20, 'Health: '+spaceshipHealth, { fontSize: '32px', fill: '#a7369e'});
+  healthText = game.add.text(100, 20, 'Health: ' + spaceshipHealth, { fontSize: '32px', fill: '#a7369e'});
   healthText.fixedToCamera = true;
   aAlive = game.add.text(100, 100, 'Asteroids left: ', { fontSize: '32px', fill: '#c6338d'});
   aAlive.fixedToCamera = true;
@@ -103,12 +82,13 @@ function create() {
   music.play('', 0, 1, true);
   music.loop = true;
 
-  // FULLLSCREEN BUTTON
-  fsButton = game.add.button(20, 20, 'fullscreen', actionOnClick);
-  fsButton.fixedToCamera = true;
-  fsButton.visible=true;
-
+  // BUTTONS
+  btFullscreen = game.add.button(20, 20, 'fullscreen', actionOnClick);
+  btFullscreen.fixedToCamera = true;
+  btRestart = game.add.button(1100, 20, 'restart', restartGame);
+  btRestart.fixedToCamera = true;
   if(!game.device.desktop){
+  game.input.onDown.add(gofull, this);
   // create our virtual GAME CONTROL BUTTONS
   buttonleft = game.add.button(20, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
   buttonleft.scale.setTo(2, 2);
@@ -181,6 +161,9 @@ function update() {
       shipShot.stop();
     }
   }
+
+  healthText.text = 'Health: ' + spaceshipHealth.toFixed(0);
+  scoreText.text = 'Score: ' + score.toFixed(0);
   //overlap(object1, object2, overlapCallback, processCallback, callbackContext) → {boolean}
   game.physics.arcade.overlap(asteroids, bullets, asteroidHit, null, this);
   game.physics.arcade.collide(asteroids, spaceship, spaceshipHit, null, this);
@@ -192,12 +175,39 @@ function update() {
   */
 }
 
+function generateSpaceship(){
+  spaceship = game.add.sprite(game.world.centerX, game.world.centerY, 'ship');
+  //spaceship.scale.setTo(2,2);
+  spaceship.anchor.set(0.5);
+  game.physics.enable(spaceship, Phaser.Physics.ARCADE);
+  spaceship.body.collideWorldBounds = true;
+  spaceship.body.bounce.set(0.2);
+  spaceship.body.maxVelocity.set(200);
+  game.camera.follow(spaceship);
+}
+
+function generateAsteroids(){
+  asteroids = game.add.group();
+  asteroids.enableBody = true;
+  for(i=0, x=0; i<nAsteroids; i++, x++){
+    x%=3;
+    if(x===0)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid1');
+    if(x===1)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid2');
+    if(x===2)a = asteroids.create(game.world.randomX, game.world.randomY, 'asteroid3');
+    a.body.bounce.set(0.7);
+    a.body.collideWorldBounds = true;
+    a.body.velocity.setTo(Math.random() * aSpeed, Math.random() * aSpeed);
+    dim=(Math.random() * aMaxSize) + 0.5; //asteroid's dimension
+    a.scale.setTo(dim, dim);
+    a.health = dim * 2;
+  }
+}
+
 function asteroidHit(asteroid, bullet){
   bullet.kill();
   asteroid.damage(1);
   if(asteroid.health <= 0){
     score += 10;
-    scoreText.text = 'Score: '+ score.toFixed(0);
   }
 }
 
@@ -214,8 +224,6 @@ function spaceshipHit(spaceship, asteroid){
     shipShot.loop=false;
     shipExplosion.play('', 0, 1, false);
   }
-  healthText.text = 'Health: ' + spaceshipHealth.toFixed(0);
-  scoreText.text = 'Score: ' + score.toFixed(0);
 }
 
 function fireBullet () {
@@ -270,6 +278,15 @@ if (game.scale.isFullScreen)
 }
 
 function gofull() { game.scale.startFullScreen(false);}
+
+function restartGame(){
+  score = 0;
+  spaceshipHealth = totHealth;
+  asteroids.destroy();
+  generateAsteroids();
+  spaceship.destroy();
+  generateSpaceship();
+}
 
 function render() {
   //game.debug.bodyInfo(asteroids, 32, 32);
