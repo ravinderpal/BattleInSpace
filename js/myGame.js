@@ -66,9 +66,9 @@ function create() {
   // SCORE, HEALTH, AND ASTEROIDS-ALIVE TEXTS
   scoreText = game.add.text(100, 60, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
   scoreText.fixedToCamera = true;
-  healthText = game.add.text(100, 20, 'Health: ' + spaceshipHealth, { fontSize: '32px', fill: '#a7369e'});
+  healthText = game.add.text(100, 20, 'Health: ' + spaceshipHealth, { fontSize: '32px', fill: '#d8137e'});
   healthText.fixedToCamera = true;
-  aAlive = game.add.text(100, 100, 'Asteroids left: ', { fontSize: '32px', fill: '#c6338d'});
+  aAlive = game.add.text(100, 100, 'Asteroids left: ', { fontSize: '32px', fill: '#d8137e'});
   aAlive.fixedToCamera = true;
 
   //  GAME INPUT
@@ -88,6 +88,7 @@ function create() {
   btRestart = game.add.button(1100, 20, 'restart', restartGame);
   btRestart.fixedToCamera = true;
   if(!game.device.desktop){
+    game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
   game.input.onDown.add(gofull, this);
   // create our virtual GAME CONTROL BUTTONS
   buttonleft = game.add.button(20, 472, 'buttonhorizontal', null, this, 0, 1, 0, 1);
@@ -121,7 +122,7 @@ function create() {
   buttonfire.events.onInputOut.add(function(){fire=false;});
   buttonfire.events.onInputDown.add(function(){fire=true;});
   buttonfire.events.onInputUp.add(function(){fire=false;});
-}
+  }
 }
 
 
