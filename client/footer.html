@@ -1,0 +1,92 @@
+<template name="footer">
+	<div class="footer centered">
+		<p>And here's the code:</p>
+
+		<pre>
+class @BootState extends Phaser.State
+	constructor: -> super
+
+	preload: ->
+		@game.load.image("preloader", "loader.png")
+
+	create: ->
+		# Put any game/screen configuration logic here
+		switch
+			when @game.device.desktop
+				;
+			when @game.device.android
+				;
+			when @game.device.iOS
+				;
+			when @game.device.linux
+				;
+			when @game.device.macOS
+				;
+
+		@game.state.start "Preloader", true, false
+
+class @PreloaderState extends Phaser.State
+	constructor: -> super
+
+	preload: ->
+		@createPreloader()
+		@loadAssets()
+
+	createPreloader: =>
+		@preloader = @game.add.sprite(200, 250, "preloader")
+		@load.setPreloadSprite(@preloader)
+
+	loadAssets: =>
+		@game.load.image("logo", "phaser.png")
+
+	create: ->
+		@startMainMenu()
+
+	startMainMenu: ->
+		@game.state.start "MainMenu", true, false
+
+class @MainMenuState extends Phaser.State
+	constructor: -> super
+
+	create: ->
+		@logo = new LogoSprite(@game, 
+							   @game.world.centerX,
+							   -300,
+							   "logo")
+		@game.world.add(@logo)
+
+		@game.add.tween(@logo)
+			.to(y: 800, 3000, Phaser.Easing.Linear.None, true)
+			.onComplete.add @startGame, true
+
+	startGame: =>
+		@game.state.start "InGame", true, false
+
+class @InGameState extends Phaser.State
+	constructor: -> super
+
+	create: ->
+		text = "InGame"
+		style =
+			font: "65px Arial"
+			fill: "#ff0044"
+			align: "center"
+
+		@ingameTitle = @game.add.text(@game.world.centerX - 100, @game.world.centerY, text, style)
+
+		@game.add.tween(@ingameTitle)
+			.to(y: Math.random() * 100, Math.random() * 2000, Phaser.Easing.Cubic.InOut, true, 0, Number.MAX_VALUE, true)
+
+Template.game.game = ->
+	game = new Phaser.Game(800, 600, Phaser.CANVAS)
+	game.state.add "Boot", new BootState, false
+	game.state.add "Preloader", new PreloaderState, false
+	game.state.add "MainMenu", new MainMenuState, false
+	game.state.add "InGame", new InGameState, false
+
+	game.state.start "Boot"
+
+	return
+		</pre>
+	</div>
+</template>
