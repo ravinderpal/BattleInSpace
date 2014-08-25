@@ -1,19 +1,19 @@
 class @PreloaderState extends Phaser.State
-	constructor: -> super
+  constructor: -> super
 
-	preload: ->
-		@createPreloader()
-		@loadAssets()
+  preload: ->
+    @createPreloader()
+    @loadAssets()
 
-	createPreloader: =>
-		@preloader = @game.add.sprite(200, 250, "preloader")
-		@load.setPreloadSprite(@preloader)
+  createPreloader: =>
+    @preloader = @game.add.sprite(200, 250, "preloader")
+    @load.setPreloadSprite(@preloader)
 
-	loadAssets: =>
-		@game.load.image("logo", "phaser.png")
+  loadAssets: =>
+    @game.load.image("logo", "phaser.png")
 
-	create: ->
-		@startMainMenu()
+  create: ->
+    @startMainMenu()
 
-	startMainMenu: ->
-		@game.state.start "MainMenu", true, false
+  startMainMenu: ->
+    @game.state.start "MainMenu", true, false
