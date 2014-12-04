@@ -5,10 +5,10 @@ body{
 #title{
 	text-align:center;
 	font-size: 50px;
-
+	color:#f42;
 }
 
-.items{
+.item{
 		text-align:center;
 		font-size: 40px;
 }
