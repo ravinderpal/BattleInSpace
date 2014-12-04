@@ -1,5 +1,5 @@
 // Singh Ravinder Pal
-// Battle In Space
+
 
 var game = new Phaser.Game(1300, 700, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
