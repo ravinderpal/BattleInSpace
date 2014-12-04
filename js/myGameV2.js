@@ -23,7 +23,7 @@ function preload() {
   // AUDIO SYSTEM
   game.load.audio('spaceMusic', 'assets/spaceMusic.mp3');
   game.load.audio('shipExplosion', 'assets/explode1.wav');
-  game.load.audio('shot', 'assets/pistol.wav');
+  game.load.audio('shot', 'assets/shotgun.wav');
 
   //SCREEN SETTINGS
   game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
