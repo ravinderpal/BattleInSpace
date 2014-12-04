@@ -64,11 +64,11 @@ function create() {
   generateAsteroids();
 
   // SCORE, HEALTH, AND ASTEROIDS-ALIVE TEXTS
-  scoreText = game.add.text(100, 60, 'Score: 0', { fontSize: '32px', fill: '#d8137e' });
+  scoreText = game.add.text(100, 60, 'Score: 0', { fontSize: '32px', fill: '#fd0' });
   scoreText.fixedToCamera = true;
-  healthText = game.add.text(100, 20, 'Health: ' + spaceshipHealth, { fontSize: '32px', fill: '#d8137e'});
+  healthText = game.add.text(100, 20, 'Health: ' + spaceshipHealth, { fontSize: '32px', fill: '#fd0'});
   healthText.fixedToCamera = true;
-  aAlive = game.add.text(100, 100, 'Students alive: ', { fontSize: '32px', fill: '#d8137e'});
+  aAlive = game.add.text(100, 100, 'Students alive: ', { fontSize: '32px', fill: '#fd0'});
   aAlive.fixedToCamera = true;
 
   //  GAME INPUT
